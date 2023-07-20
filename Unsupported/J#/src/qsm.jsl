@@ -1,0 +1,66 @@
+package QuickSendMail;
+import System.*;
+import System.Mime.*;
+import System.Diagnostics.*;
+import System.Net.Mail.*;
+
+public class Program
+{
+	public static void main(String[] args)
+	{
+		if (args.length >= 2) {
+    var recipients = args[0]; // To
+    var from = args[1]; // From
+    var subject = args[2]; // Subject (optional)
+    var body = args[3]; // Body (optional)
+	var isBodyHTML = args[4].toLower(); // Is body HTML? (optional)
+
+    var mail = new MailMessage();
+    mail.To = recipients;
+    mail.From = from;
+    mail.Subject = subject;
+    mail.TextBody = body;
+	
+	if (isBodyHTML == "true") {
+		mail.IsBodyHtml = true;
+	}
+
+      try {
+        var mailDomain = Mail.To.split("@")[1];
+        if (mailDomain == undefined) {
+          throw "Invalid email address.";
+        }
+
+        var startInfo = new ProcessStartInfo();
+        startInfo.FileName = "nslookup";
+		startInfo.Arguments = "-q=mx " + mailDomain;
+		startInfo.UseShellExecute = false;
+		startInfo.CreateNoWindow = true;
+        startInfo.RedirectStandardOutput = true;
+		startInfo.RedirectStandardError = true;
+		
+		var mxProc = Process.Start(startInfo);
+		var mxStdOut = mxProc.StandardOutput.ReadToEnd();
+        if (mxStdOut.indexOf("mail exchanger") == -1) {
+          Console.Error.WriteLine("Error: MX record lookup failed.\r\nDomain: " + mailDomain + "\r\nDescription: " + mxProc.StandardError.ReadToEnd());
+          break;
+        }
+
+        var smtpServer = mxStdOut.split("mail exchanger = ")[1].split("\r\n")[0];
+		
+        var smtpClient = new SmtpClient(smtpServer);
+		
+		try {
+			smtpClient.Send(mail);
+		} catch (var e) {
+			Console.Error.WriteLine("Error: Email send failed." + "\r\n" + "SMTP Server: " + smtpServer + "\r\n" + "Port: 25" + "\r\n" + "Description: " + e.message);
+		}
+      } catch (var e) {
+        Console.Error.WriteLine("Error: Domain extraction failed." + "\r\n" + "Description: " + e.message);
+	  }
+//if (Err.Number !== 0) {
+//Console.WriteLine("Error: Email send failed.\r\nSMTP Server: " + SMTP + "\r\nPort: 25\r\nDescription: " + Err.Description);
+//WScript.Quit;
+}
+}
+}

@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<!--
+**********Warning**********
+
+This script is outdated. Use the newer QSM utility that uses 'System.CommandLine' to generate the command line help instead.
+
+*************************
+
+Usage: cscript //nologo qsm.wsf
+
+Info:
+This Windows Script File's sole purpose is for generating command line help for the QuickSendMail Command Line Utilty.
+Note that this file will use 'qsm.wsf' instead of 'qsm' when referencing the QSM command options.
+This file is NOT the QSM utility and is currently not capable of sending an email, though it is possible to write a script in it that does.
+This script may be reused if QSM is rewritten in a WSH language.
+-->
+<package>
+	<job id="main">
+		<runtime>
+			<description>Pebbleware QuickSendMail Command Line Utility [https://github.com/Pebbleware/email-without-smtp]
+Copyright (C) Pebbleware. All rights reserved.
+			</description>
+			<named
+				name="to"
+				helpstring="A comma-separated list of addresses the email will be sent to."
+				type="string"
+				required="true"
+			/>
+			<named
+				name="from"
+				helpstring="The address the email will be sent from"
+				type="string"
+				required="false"
+			/>
+			<named
+				name="replyto"
+				helpstring="A comma-separated list of addresses for the Reply-To"
+				type="string"
+				required="false"
+			/>
+			<named
+				name="cc"
+				helpstring="A comma-separated list of addresses for the CC"
+				type="string"
+				required="false"
+			/>
+			<named
+				name="bcc"
+				helpstring="A comma-separated list of addresses for the BCC"
+				type="string"
+				required="false"
+			/>
+			<named
+				name="subject"
+				helpstring="The subject of the email"
+				type="string"
+				required="false"
+			/>
+			<named
+				name="body"
+				helpstring="The body of the email"
+				type="string"
+				required="false"
+			/>
+			<named
+				name="attachments"
+				helpstring="A comma-separated list of file names to be added as attachments to the email"
+				type="string"
+				required="false"
+			/>
+			<named
+				name="html"
+				helpstring="A boolean (true/false) indicating whether or not the body is HTML"
+				type="string"
+				required="false"
+			/>
+			<example>Example     : qsm.wsf /to:sam@example.com /from:ben@example.org /subject:Greetings "/body:Hello World!"</example>
+		</runtime>
+		<script language="JScript">
+			<![CDATA[
+				WScript.Arguments.ShowUsage()
+			]]>
+		</script>
+	</job>
+</package>
